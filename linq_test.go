@@ -508,3 +508,184 @@ func TestList_MustLast(t *testing.T) {
 		})
 	}
 }
+
+func TestList_At(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		index int
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    T
+		wantErr bool
+	}{
+		{
+			name: "get element by index",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: 2,
+			},
+			want:    3,
+			wantErr: false,
+		},
+		{
+			name: "index is lower than 0",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: -1,
+			},
+			want:    0,
+			wantErr: true,
+		},
+		{
+			name: "index is over max elements",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: 5,
+			},
+			want:    0,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			got, err := l.At(tt.args.index)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("At() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("At() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestList_MustAt(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		index int
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   T
+		raised bool
+	}{
+		{
+			name: "get element by index",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: 2,
+			},
+			want:   3,
+			raised: false,
+		},
+		{
+			name: "index is lower than 0",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: -1,
+			},
+			want:   0,
+			raised: true,
+		},
+		{
+			name: "index is over max elements",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: 5,
+			},
+			want:   0,
+			raised: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			defer func() {
+				err := recover()
+				if (err != nil) != tt.raised {
+					t.Errorf("MustAt() panic = %v, raised %v", err, tt.raised)
+				}
+			}()
+			if got := l.MustAt(tt.args.index); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("MustAt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestList_AtOrDefault(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		index int
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   T
+	}{
+		{
+			name: "get element by index",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: 2,
+			},
+			want: 3,
+		},
+		{
+			name: "index is lower than 0",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: -1,
+			},
+			want: 0,
+		},
+		{
+			name: "index is over max elements",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: 5,
+			},
+			want: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.AtOrDefault(tt.args.index); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AtOrDefault() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

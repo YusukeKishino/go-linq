@@ -96,3 +96,34 @@ func (l *List[T]) LastOrDefault(filter ...func(value T, index int) bool) T {
 
 	return last
 }
+
+// At returns specific element by index.
+// If element is not found, then it returns error.
+func (l *List[T]) At(index int) (T, error) {
+	if index < 0 || len(l.slice) <= index {
+		return *new(T), fmt.Errorf("out of index: %v", index)
+	}
+	return l.slice[index], nil
+}
+
+// MustAt returns specific element by index.
+// If element is not found, then it raises panic.
+func (l *List[T]) MustAt(index int) T {
+	at, err := l.At(index)
+	if err != nil {
+		panic(err)
+	}
+
+	return at
+}
+
+// AtOrDefault returns specific element by index.
+// If element is not found, then it returns default value.
+func (l *List[T]) AtOrDefault(index int) T {
+	at, err := l.At(index)
+	if err != nil {
+		return *new(T)
+	}
+
+	return at
+}
