@@ -138,3 +138,13 @@ func (l *List[T]) Skip(index int) *List[T] {
 	}
 	return From(l.slice[index:])
 }
+
+// SkipWhile returns elements after the specified condition.
+func (l *List[T]) SkipWhile(f func(value T, index int) bool) *List[T] {
+	for i, t := range l.slice {
+		if f(t, i) {
+			return From(l.slice[i:])
+		}
+	}
+	return From(l.slice[len(l.slice):])
+}
