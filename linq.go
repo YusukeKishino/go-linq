@@ -169,3 +169,16 @@ func (l *List[T]) TakeWhile(f func(value T, index int) bool) *List[T] {
 	}
 	return l
 }
+
+// DefaultIfEmpty returns default value if list is empty.
+func (l *List[T]) DefaultIfEmpty(defaultT ...T) *List[T] {
+	if len(l.slice) > 0 {
+		return l
+	}
+
+	if len(defaultT) > 0 {
+		return From([]T{defaultT[0]})
+	}
+
+	return From([]T{*new(T)})
+}

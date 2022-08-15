@@ -975,3 +975,57 @@ func TestList_TakeWhile(t *testing.T) {
 		})
 	}
 }
+
+func TestList_DefaultIfEmpty(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		defaultT []T
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *List[T]
+	}{
+		{
+			name: "not empty",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				defaultT: nil,
+			},
+			want: &List[T]{[]T{1, 2, 3, 4, 5}},
+		},
+		{
+			name: "empty",
+			fields: fields{
+				slice: []T{},
+			},
+			args: args{
+				defaultT: nil,
+			},
+			want: &List[T]{[]T{0}},
+		},
+		{
+			name: "empty with specific default value",
+			fields: fields{
+				slice: []T{},
+			},
+			args: args{
+				defaultT: []T{-1},
+			},
+			want: &List[T]{[]T{-1}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.DefaultIfEmpty(tt.args.defaultT...); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DefaultIfEmpty() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
