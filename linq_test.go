@@ -689,3 +689,87 @@ func TestList_AtOrDefault(t *testing.T) {
 		})
 	}
 }
+
+func TestList_Skip(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		index int
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *List[T]
+	}{
+		{
+			name: "get elements from first",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: 0,
+			},
+			want: &List[T]{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+		},
+		{
+			name: "get elements from second",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: 1,
+			},
+			want: &List[T]{
+				slice: []T{2, 3, 4, 5},
+			},
+		},
+		{
+			name: "get elements from last",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: 4,
+			},
+			want: &List[T]{
+				slice: []T{5},
+			},
+		},
+		{
+			name: "get elements from negative index",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: -1,
+			},
+			want: &List[T]{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+		},
+		{
+			name: "get elements with index exceeded the maximum",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				index: 5,
+			},
+			want: &List[T]{
+				slice: []T{},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.Skip(tt.args.index); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Skip() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

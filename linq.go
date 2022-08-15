@@ -127,3 +127,14 @@ func (l *List[T]) AtOrDefault(index int) T {
 
 	return at
 }
+
+// Skip returns elements after the specified index.
+func (l *List[T]) Skip(index int) *List[T] {
+	if index < 0 {
+		index = 0
+	}
+	if index >= len(l.slice) {
+		index = len(l.slice)
+	}
+	return From(l.slice[index:])
+}
