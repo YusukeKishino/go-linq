@@ -825,3 +825,153 @@ func TestList_SkipWhile(t *testing.T) {
 		})
 	}
 }
+
+func TestList_Take(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		count int
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *List[T]
+	}{
+		{
+			name: "get zero element",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				count: 0,
+			},
+			want: &List[T]{
+				slice: []T{},
+			},
+		},
+		{
+			name: "get elements up to second",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				count: 2,
+			},
+			want: &List[T]{
+				slice: []T{1, 2},
+			},
+		},
+		{
+			name: "get elements up to last",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				count: 5,
+			},
+			want: &List[T]{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+		},
+		{
+			name: "get elements from negative count",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				count: -1,
+			},
+			want: &List[T]{
+				slice: []T{},
+			},
+		},
+		{
+			name: "get elements with count exceeded the maximum",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				count: 6,
+			},
+			want: &List[T]{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.Take(tt.args.count); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Take() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestList_TakeWhile(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		f func(value T, index int) bool
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *List[T]
+	}{
+		{
+			name: "get elements up to specific condition",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: func(value T, index int) bool {
+					return value < 3
+				},
+			},
+			want: &List[T]{
+				slice: []T{1, 2},
+			},
+		},
+		{
+			name: "get elements by conditions that match all elements",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: func(value T, index int) bool {
+					return value < 100
+				},
+			},
+			want: &List[T]{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+		},
+		{
+			name: "get elements from unmatched condition",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: func(value T, index int) bool {
+					return value == 100
+				},
+			},
+			want: &List[T]{
+				slice: []T{},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.TakeWhile(tt.args.f); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("TakeWhile() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

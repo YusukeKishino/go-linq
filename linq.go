@@ -148,3 +148,24 @@ func (l *List[T]) SkipWhile(f func(value T, index int) bool) *List[T] {
 	}
 	return From(l.slice[len(l.slice):])
 }
+
+// Take returns elements up to the specified index.
+func (l *List[T]) Take(count int) *List[T] {
+	if count < 0 {
+		count = 0
+	}
+	if count >= len(l.slice) {
+		count = len(l.slice)
+	}
+	return From(l.slice[:count])
+}
+
+// TakeWhile returns elements up to the specified condition.
+func (l *List[T]) TakeWhile(f func(value T, index int) bool) *List[T] {
+	for i, t := range l.slice {
+		if !f(t, i) {
+			return From(l.slice[:i])
+		}
+	}
+	return l
+}
