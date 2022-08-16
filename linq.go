@@ -292,3 +292,17 @@ func (l *List[T]) Min(f func(value T, index int) float64) T {
 
 	return min
 }
+
+// Average returns average of list
+func (l *List[T]) Average(f func(value T, index int) float64) float64 {
+	if len(l.slice) == 0 {
+		return 0
+	}
+
+	sum := 0.0
+	for i, t := range l.slice {
+		sum += f(t, i)
+	}
+
+	return sum / float64(len(l.slice))
+}
