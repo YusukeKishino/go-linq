@@ -7,7 +7,7 @@ type List[T comparable] struct {
 }
 
 // From is constructor of List.
-func From[T any](s []T) *List[T] {
+func From[T comparable](s []T) *List[T] {
 	return &List[T]{
 		slice: s,
 	}
@@ -214,6 +214,17 @@ func (l *List[T]) Any(f ...func(value T, index int) bool) bool {
 
 	for i, t := range l.slice {
 		if f[0](t, i) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// Contains returns true if there is matched element
+func (l *List[T]) Contains(value T) bool {
+	for _, t := range l.slice {
+		if t == value {
 			return true
 		}
 	}

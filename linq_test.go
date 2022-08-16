@@ -1199,3 +1199,47 @@ func TestList_Any(t *testing.T) {
 		})
 	}
 }
+
+func TestList_Contains(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		value T
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   bool
+	}{
+		{
+			name: "contains",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				value: 3,
+			},
+			want: true,
+		},
+		{
+			name: "not contains",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				value: 10,
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.Contains(tt.args.value); got != tt.want {
+				t.Errorf("Contains() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
