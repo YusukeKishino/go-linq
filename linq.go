@@ -2,7 +2,7 @@ package linq
 
 import "fmt"
 
-type List[T any] struct {
+type List[T comparable] struct {
 	slice []T
 }
 
