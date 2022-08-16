@@ -1315,3 +1315,51 @@ func TestList_SequenceEqual(t *testing.T) {
 		})
 	}
 }
+
+func TestList_Count(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		f []func(value T, index int) bool
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   int
+	}{
+		{
+			name: "count elements",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: nil,
+			},
+			want: 5,
+		},
+		{
+			name: "count matched elements",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: []func(value T, index int) bool{
+					func(value T, index int) bool {
+						return value%2 == 0
+					},
+				},
+			},
+			want: 2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.Count(tt.args.f...); got != tt.want {
+				t.Errorf("Count() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

@@ -232,7 +232,7 @@ func (l *List[T]) Contains(value T) bool {
 	return false
 }
 
-//SequenceEqual return true if all element of two list are the same values
+// SequenceEqual return true if all element of two list are the same values
 func (l *List[T]) SequenceEqual(other *List[T]) bool {
 	if len(l.slice) != len(other.slice) {
 		return false
@@ -244,4 +244,13 @@ func (l *List[T]) SequenceEqual(other *List[T]) bool {
 	}
 
 	return true
+}
+
+// Count returns number of element
+func (l *List[T]) Count(f ...func(value T, index int) bool) int {
+	if len(f) == 0 {
+		return len(l.slice)
+	}
+
+	return len(l.Where(f[0]).slice)
 }
