@@ -1067,3 +1067,135 @@ func TestList_Where(t *testing.T) {
 		})
 	}
 }
+
+func TestList_All(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		f func(value T, index int) bool
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   bool
+	}{
+		{
+			name: "all elements are matched",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: func(value T, index int) bool {
+					return value > 0
+				},
+			},
+			want: true,
+		},
+		{
+			name: "1 element is not matched",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: func(value T, index int) bool {
+					return value < 5
+				},
+			},
+			want: false,
+		},
+		{
+			name: "empty list",
+			fields: fields{
+				slice: []T{},
+			},
+			args: args{
+				f: func(value T, index int) bool {
+					return false
+				},
+			},
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.All(tt.args.f); got != tt.want {
+				t.Errorf("All() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestList_Any(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		f []func(value T, index int) bool
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   bool
+	}{
+		{
+			name: "empty list",
+			fields: fields{
+				slice: []T{},
+			},
+			args: args{
+				f: nil,
+			},
+			want: false,
+		},
+		{
+			name: "no condition",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: nil,
+			},
+			want: true,
+		},
+		{
+			name: "with matched condition",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: []func(value T, index int) bool{
+					func(value T, index int) bool {
+						return value == 3
+					},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "with unmatched condition",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: []func(value T, index int) bool{
+					func(value T, index int) bool {
+						return value == 10
+					},
+				},
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.Any(tt.args.f...); got != tt.want {
+				t.Errorf("Any() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

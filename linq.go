@@ -194,3 +194,29 @@ func (l *List[T]) Where(f func(value T, index int) bool) *List[T] {
 
 	return From(s)
 }
+
+// All returns true if all elements are matched
+func (l *List[T]) All(f func(value T, index int) bool) bool {
+	for i, t := range l.slice {
+		if !f(t, i) {
+			return false
+		}
+	}
+
+	return true
+}
+
+// Any returns true if there is matched element
+func (l *List[T]) Any(f ...func(value T, index int) bool) bool {
+	if len(f) == 0 {
+		return len(l.slice) > 0
+	}
+
+	for i, t := range l.slice {
+		if f[0](t, i) {
+			return true
+		}
+	}
+
+	return false
+}
