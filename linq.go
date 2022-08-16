@@ -316,3 +316,8 @@ func (l *List[T]) Sum(f func(value T, index int) float64) float64 {
 
 	return sum
 }
+
+// ToSlice returns slice of elements
+func (l *List[T]) ToSlice() []T {
+	return l.slice
+}
