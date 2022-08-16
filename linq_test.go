@@ -1243,3 +1243,75 @@ func TestList_Contains(t *testing.T) {
 		})
 	}
 }
+
+func TestList_SequenceEqual(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		other *List[T]
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   bool
+	}{
+		{
+			name: "exactly same",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				other: &List[T]{
+					slice: []T{1, 2, 3, 4, 5},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "different length",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				other: &List[T]{
+					slice: []T{1, 2, 3, 4},
+				},
+			},
+			want: false,
+		},
+		{
+			name: "different values",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				other: &List[T]{
+					slice: []T{1, 2, 2, 2, 2},
+				},
+			},
+			want: false,
+		},
+		{
+			name: "empty lists",
+			fields: fields{
+				slice: []T{},
+			},
+			args: args{
+				other: &List[T]{
+					slice: []T{},
+				},
+			},
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.SequenceEqual(tt.args.other); got != tt.want {
+				t.Errorf("SequenceEqual() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
