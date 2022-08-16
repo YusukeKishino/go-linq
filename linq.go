@@ -182,3 +182,15 @@ func (l *List[T]) DefaultIfEmpty(defaultT ...T) *List[T] {
 
 	return From([]T{*new(T)})
 }
+
+// Where returns condition matched elements
+func (l *List[T]) Where(f func(value T, index int) bool) *List[T] {
+	s := make([]T, 0, len(l.slice))
+	for i, t := range l.slice {
+		if f(t, i) {
+			s = append(s, t)
+		}
+	}
+
+	return From(s)
+}

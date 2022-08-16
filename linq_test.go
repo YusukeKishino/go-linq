@@ -1029,3 +1029,41 @@ func TestList_DefaultIfEmpty(t *testing.T) {
 		})
 	}
 }
+
+func TestList_Where(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		f func(value T, index int) bool
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *List[T]
+	}{
+		{
+			name: "collect matched element",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: func(value T, index int) bool {
+					return value%2 == 0
+				},
+			},
+			want: &List[T]{
+				slice: []T{2, 4},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.Where(tt.args.f); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Where() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
