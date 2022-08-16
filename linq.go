@@ -306,3 +306,13 @@ func (l *List[T]) Average(f func(value T, index int) float64) float64 {
 
 	return sum / float64(len(l.slice))
 }
+
+// Sum returns sum of elements
+func (l *List[T]) Sum(f func(value T, index int) float64) float64 {
+	sum := 0.0
+	for i, t := range l.slice {
+		sum += f(t, i)
+	}
+
+	return sum
+}
