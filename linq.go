@@ -254,3 +254,41 @@ func (l *List[T]) Count(f ...func(value T, index int) bool) int {
 
 	return len(l.Where(f[0]).slice)
 }
+
+// Max returns maximum element of list
+func (l *List[T]) Max(f func(value T, index int) float64) T {
+	if len(l.slice) == 0 {
+		return *new(T)
+	}
+
+	maxV := f(l.slice[0], 0)
+	max := l.slice[0]
+	for i, t := range l.slice[1:] {
+		v := f(t, i)
+		if maxV < v {
+			maxV = v
+			max = t
+		}
+	}
+
+	return max
+}
+
+// Min returns minimum element of list
+func (l *List[T]) Min(f func(value T, index int) float64) T {
+	if len(l.slice) == 0 {
+		return *new(T)
+	}
+
+	minV := f(l.slice[0], 0)
+	min := l.slice[0]
+	for i, t := range l.slice[1:] {
+		v := f(t, i)
+		if minV > v {
+			minV = v
+			min = t
+		}
+	}
+
+	return min
+}

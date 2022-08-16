@@ -1363,3 +1363,99 @@ func TestList_Count(t *testing.T) {
 		})
 	}
 }
+
+func TestList_Max(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		f func(value T, index int) float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   T
+	}{
+		{
+			name: "max of elements",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: func(value T, index int) float64 {
+					return float64(value)
+				},
+			},
+			want: 5,
+		},
+		{
+			name: "empty list",
+			fields: fields{
+				slice: []T{},
+			},
+			args: args{
+				f: func(value T, index int) float64 {
+					return float64(value)
+				},
+			},
+			want: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.Max(tt.args.f); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Max() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestList_Min(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	type args struct {
+		f func(value T, index int) float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   T
+	}{
+		{
+			name: "min of elements",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			args: args{
+				f: func(value T, index int) float64 {
+					return float64(value)
+				},
+			},
+			want: 1,
+		},
+		{
+			name: "empty list",
+			fields: fields{
+				slice: []T{},
+			},
+			args: args{
+				f: func(value T, index int) float64 {
+					return float64(value)
+				},
+			},
+			want: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.Min(tt.args.f); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Min() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
