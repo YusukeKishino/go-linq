@@ -321,3 +321,12 @@ func (l *List[T]) Sum(f func(value T, index int) float64) float64 {
 func (l *List[T]) ToSlice() []T {
 	return l.slice
 }
+
+// Reverse returns reversed list
+func (l *List[T]) Reverse() *List[T] {
+	s := make([]T, len(l.slice))
+	for i := 0; i < len(l.slice); i++ {
+		s[i] = l.slice[len(l.slice)-i-1]
+	}
+	return From(s)
+}

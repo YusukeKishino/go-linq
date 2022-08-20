@@ -1555,3 +1555,32 @@ func TestList_Sum(t *testing.T) {
 		})
 	}
 }
+
+func TestList_Reverse(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   *List[T]
+	}{
+		{
+			name: "reverse list",
+			fields: fields{
+				slice: []T{1, 2, 3, 4, 5},
+			},
+			want: &List[T]{
+				slice: []T{5, 4, 3, 2, 1},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.Reverse(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Reverse() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
