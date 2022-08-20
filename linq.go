@@ -1,6 +1,8 @@
 package linq
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type List[T comparable] struct {
 	slice []T
@@ -327,6 +329,19 @@ func (l *List[T]) Reverse() *List[T] {
 	s := make([]T, len(l.slice))
 	for i := 0; i < len(l.slice); i++ {
 		s[i] = l.slice[len(l.slice)-i-1]
+	}
+	return From(s)
+}
+
+// Distinct returns list excluding duplicate elements
+func (l *List[T]) Distinct() *List[T] {
+	m := make(map[T]bool)
+	s := make([]T, 0, len(l.slice))
+	for _, t := range l.slice {
+		if _, ok := m[t]; !ok {
+			m[t] = true
+			s = append(s, t)
+		}
 	}
 	return From(s)
 }

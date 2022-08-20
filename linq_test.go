@@ -1584,3 +1584,41 @@ func TestList_Reverse(t *testing.T) {
 		})
 	}
 }
+
+func TestList_Distinct(t *testing.T) {
+	type fields struct {
+		slice []T
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   *List[T]
+	}{
+		{
+			name: "remove duplicate elements",
+			fields: fields{
+				slice: []T{1, 2, 2, 4, 5},
+			},
+			want: &List[T]{
+				slice: []T{1, 2, 4, 5},
+			},
+		},
+		{
+			name: "empty list",
+			fields: fields{
+				slice: []T{},
+			},
+			want: &List[T]{
+				slice: []T{},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			l := From(tt.fields.slice)
+			if got := l.Distinct(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Distinct() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
